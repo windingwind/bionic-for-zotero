@@ -1,5 +1,9 @@
-pref-title = Addon Template Example
-pref-enable =
-    .label = Enable
-pref-input = Input
+basic-title = Basic
+enableBionicReader =
+    .label = Enable Bionic Mode
+enableReaderToolbarButton =
+    .label = Enable Reader Toolbar Button
+parsing-title = Parsing
+parsingContrast = Bionic contrast level:
+parsingOffset = Bionic parsing offset:
 pref-help = { $name } Build { $version } { $time }

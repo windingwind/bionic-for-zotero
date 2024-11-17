@@ -1,28 +1,51 @@
 <linkset>
   <html:link rel="localization" href="__addonRef__-preferences.ftl" />
 </linkset>
-<groupbox
-  onload="Zotero.__addonInstance__.hooks.onPrefsEvent('load', { window });"
->
-  <label><html:h2 data-l10n-id="pref-title"></html:h2></label>
+<groupbox>
+  <label><html:h2 data-l10n-id="basic-title"></html:h2></label>
   <checkbox
-    id="zotero-prefpane-__addonRef__-enable"
-    preference="extensions.zotero.__addonRef__.enable"
-    data-l10n-id="pref-enable"
+    id="__addonRef__-enableBionicReader"
+    preference="__prefsPrefix__.enableBionicReader"
+    data-l10n-id="enableBionicReader"
+    native="true"
   />
-  <hbox>
+  <checkbox
+    id="__addonRef__-enableReaderToolbarButton"
+    preference="__prefsPrefix__.enableReaderToolbarButton"
+    data-l10n-id="enableReaderToolbarButton"
+    native="true"
+    oncommand="Zotero.__addonInstance__.hooks.onShowRestartDialog();"
+  />
+</groupbox>
+<groupbox>
+  <label><html:h2 data-l10n-id="parsing-title"></html:h2></label>
+  <hbox align="center">
     <html:label
-      for="zotero-prefpane-__addonRef__-input"
-      data-l10n-id="pref-input"
+      data-l10n-id="parsingContrast"
+      for="__addonRef__-parsingContrast"
     ></html:label>
     <html:input
-      type="text"
-      id="zotero-prefpane-__addonRef__-input"
-      preference="extensions.zotero.__addonRef__.input"
+      id="__addonRef__-parsingContrast"
+      preference="__prefsPrefix__.parsingContrast"
+      type="number"
+      min="1"
+      max="5"
+      step="1"
     ></html:input>
   </hbox>
-  <hbox class="virtualized-table-container" flex="1" height="300px">
-    <html:div id="__addonRef__-table-container" />
+  <hbox align="center">
+    <html:label
+      data-l10n-id="parsingOffset"
+      for="__addonRef__-parsingOffset"
+    ></html:label>
+    <html:input
+      id="__addonRef__-parsingOffset"
+      preference="__prefsPrefix__.parsingOffset"
+      type="number"
+      min="-5"
+      max="5"
+      step="1"
+    ></html:input>
   </hbox>
 </groupbox>
 <vbox>

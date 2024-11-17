@@ -1,11 +1,13 @@
 import { config } from "../../package.json";
 
+export { getPref, setPref, clearPref, getPrefJSON };
+
 /**
  * Get preference value.
  * Wrapper of `Zotero.Prefs.get`.
  * @param key
  */
-export function getPref(key: string) {
+function getPref(key: string) {
   return Zotero.Prefs.get(`${config.prefsPrefix}.${key}`, true);
 }
 
@@ -15,7 +17,7 @@ export function getPref(key: string) {
  * @param key
  * @param value
  */
-export function setPref(key: string, value: string | number | boolean) {
+function setPref(key: string, value: string | number | boolean) {
   return Zotero.Prefs.set(`${config.prefsPrefix}.${key}`, value, true);
 }
 
@@ -24,6 +26,15 @@ export function setPref(key: string, value: string | number | boolean) {
  * Wrapper of `Zotero.Prefs.clear`.
  * @param key
  */
-export function clearPref(key: string) {
+function clearPref(key: string) {
   return Zotero.Prefs.clear(`${config.prefsPrefix}.${key}`, true);
+}
+
+function getPrefJSON(key: string) {
+  try {
+    return JSON.parse(String(getPref(key) || "{}"));
+  } catch (e) {
+    setPref(key, "{}");
+  }
+  return {};
 }

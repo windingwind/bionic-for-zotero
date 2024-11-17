@@ -33,6 +33,15 @@ export default defineConfig({
         target: "firefox115",
         outfile: `build/addon/chrome/content/scripts/${pkg.config.addonRef}.js`,
       },
+      {
+        entryPoints: ["src/reader/*.ts"],
+        define: {
+          __env__: `"${process.env.NODE_ENV}"`,
+        },
+        bundle: true,
+        target: "firefox115",
+        outdir: "build/addon/chrome/content/scripts/reader",
+      },
     ],
   },
 

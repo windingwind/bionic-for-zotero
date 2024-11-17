@@ -1,5 +1,9 @@
-pref-title = 插件模板设置示例
-pref-enable =
-    .label = 开启
-pref-input = 输入
+basic-title = 基本
+enableBionicReader =
+    .label = 启用Bionic模式
+enableReaderToolbarButton =
+    .label = 启用阅读器工具栏按钮
+parsing-title = 解析
+parsingContrast = Bionic对比度等级:
+parsingOffset = Bionic解析偏移:
 pref-help = { $name } Build { $version } { $time }
