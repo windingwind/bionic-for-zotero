@@ -16,16 +16,16 @@ function initMenus(win: _ZoteroTypes.MainWindow): void {
     id: `${addon.data.config.addonRef}-menu-view-enable-bionic`,
     classList: ["menu-type-reader", "pdf"],
     label: getString("menu-enableBionic"),
+    type: "checkbox",
     commandListener: () => {
       setPref("enableBionicReader", !getPref("enableBionicReader"));
     },
     getVisibility(elem, ev) {
-      elem.setAttribute("type", "checkbox");
       elem.setAttribute(
         "checked",
         getPref("enableBionicReader") ? "true" : "false",
       );
-      return !elem.hidden;
+      return undefined;
     },
   });
 
@@ -34,6 +34,7 @@ function initMenus(win: _ZoteroTypes.MainWindow): void {
     id: `${addon.data.config.addonRef}-menu-view-enable-bionic-current-item`,
     classList: ["menu-type-reader", "pdf"],
     label: getString("menu-enableBionicForCurrentItem"),
+    type: "checkbox",
     commandListener: () => {
       const itemID = Zotero.Reader.getByTabID(
         win.Zotero_Tabs.selectedID,
@@ -44,7 +45,6 @@ function initMenus(win: _ZoteroTypes.MainWindow): void {
       toggleCurrentItemStatus(itemID);
     },
     getVisibility(elem, ev) {
-      elem.setAttribute("type", "checkbox");
       const itemID = Zotero.Reader.getByTabID(
         win.Zotero_Tabs.selectedID,
       ).itemID;
@@ -55,7 +55,7 @@ function initMenus(win: _ZoteroTypes.MainWindow): void {
         "checked",
         getCurrentItemStatus(itemID) ? "true" : "false",
       );
-      return !elem.hidden;
+      return undefined;
     },
   });
 
