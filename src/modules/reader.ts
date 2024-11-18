@@ -164,7 +164,7 @@ async function refreshReader(reader: _ZoteroTypes.ReaderInstance) {
     `.${addon.data.config.addonRef}-reader-button`,
   ) as HTMLButtonElement;
   if (button) {
-    updateReaderToolbarButton(button, win.__BIONIC_READER_ENABLED);
+    updateReaderToolbarButton(button, reader, win.__BIONIC_READER_ENABLED);
   }
   await win.PDFViewerApplication?.pdfViewer?.refresh();
 }
