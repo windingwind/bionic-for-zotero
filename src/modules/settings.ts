@@ -5,7 +5,9 @@ let prefsObservers: symbol[] = [];
 const PREFS_TO_OBSERVE = [
   "enableBionicReader",
   "parsingOffset",
-  "parsingContrast",
+  "opacityContrast",
+  "weightContrast",
+  "weightOffset",
 ];
 
 function initSettings() {

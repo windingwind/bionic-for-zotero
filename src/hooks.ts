@@ -1,6 +1,6 @@
 import { config } from "../package.json";
 import { initMenus } from "./modules/menu";
-import { initPreferencePane } from "./modules/preferencePane";
+import { initPreferencePane } from "./modules/preferences";
 import { initSettings, unInitSettings } from "./modules/settings";
 import { initReader, refreshReaders, unInitReader } from "./modules/reader";
 import { initLocale } from "./utils/locale";

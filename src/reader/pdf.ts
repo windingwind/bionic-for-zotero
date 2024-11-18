@@ -1,5 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import { wait } from "zotero-plugin-toolkit";
+import { computeFont } from "../utils/font";
+
 import type {
   PDFPage,
   CanvasGraphics,
@@ -95,43 +97,30 @@ function patchCanvasGraphicsShowText(
     if (!window.__BIONIC_READER_ENABLED) {
       return original_showText.apply(this, [glyphs]);
     }
-    const contrast = window.__BIONIC_PARSING_CONTRAST || 1;
-    const contrastRatio = 1 - (contrast - 1) * 0.15;
+
+    const opacityContrast = window.__BIONIC_OPACITY_CONTRAST || 1;
+
+    const weightContrast = window.__BIONIC_WEIGHT_CONTRAST || 1;
+    const weightOffset = window.__BIONIC_WEIGHT_OFFSET || 0;
+
     const savedFont = this.ctx.font;
     const savedOpacity = this.ctx.globalAlpha;
-    // Compute font weight
-    let nextBold = "";
-    if (savedFont.includes("black") || savedFont.includes("900")) {
-      // Cannot be bolder than 900
-      nextBold = "";
-    } else if (savedFont.includes("bold")) {
-      nextBold = "black";
-    } else {
-      nextBold = "bold";
-    }
 
-    let nextLight = "";
-    if (!nextBold) {
-      nextLight = "light";
-    }
-
-    const italic = savedFont.includes("italic") ? "italic" : "normal";
-
-    const fontParams = savedFont.split(" ");
-    _log("Showing text", glyphs, savedFont);
-    const fontSizeIndex = fontParams.findIndex((font) => font.includes("px"));
-
-    const baseFont = fontParams.slice(fontSizeIndex).join(" ");
-    const bolderFont = `${italic} ${nextBold || "normal"} ${baseFont}`;
-    const lighterFont = `${italic} ${nextLight || "normal"} ${baseFont}`;
+    const { bold, light } = computeFont({
+      font: savedFont,
+      alpha: savedOpacity,
+      opacityContrast,
+      weightContrast,
+      weightOffset,
+    });
 
     const newGlyphData = computeBionicGlyphs(glyphs);
 
-    for (const { glyphs: newG, bold } of newGlyphData) {
-      this.ctx.font = bold ? bolderFont : lighterFont;
+    for (const { glyphs: newG, isBold } of newGlyphData) {
+      this.ctx.font = isBold ? bold.font : light.font;
       // If use greater contrast is enabled, set text opacity to less than 1
-      if (contrast > 1 && !bold) {
-        this.ctx.globalAlpha = savedOpacity * contrastRatio;
+      if (opacityContrast > 1 && !isBold) {
+        this.ctx.globalAlpha = bold.alpha;
       }
       original_showText.apply(this, [newG]);
       this.ctx.font = savedFont;
@@ -152,7 +141,7 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
   let word = "";
   const newGlyphData: {
     glyphs: Glyph[];
-    bold: boolean;
+    isBold: boolean;
   }[] = [];
 
   const parsingOffset = window.__BIONIC_PARSING_OFFSET || 0;
@@ -204,7 +193,7 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
         // If the word has not started and we encounter a space, the word has not started
         newGlyphData.push({
           glyphs: glyphs.slice(i, i + 1),
-          bold: false,
+          isBold: false,
         });
         continue;
       }
@@ -225,7 +214,7 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
     if (wordEndIdx === wordStartIdx || !CONVERTIBLE_REGEX.test(word)) {
       newGlyphData.push({
         glyphs: glyphs.slice(wordStartIdx, wordEndIdx + 1),
-        bold: false,
+        isBold: false,
       });
       wordStartIdx = NaN;
       wordEndIdx = NaN;
@@ -265,13 +254,13 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
 
     newGlyphData.push({
       glyphs: glyphs.slice(wordStartIdx, wordStartIdx + boldNumber),
-      bold: true,
+      isBold: true,
     });
 
     if (wordStartIdx + boldNumber <= wordEndIdx) {
       newGlyphData.push({
         glyphs: glyphs.slice(wordStartIdx + boldNumber, wordEndIdx + 1),
-        bold: false,
+        isBold: false,
       });
     }
 
@@ -284,7 +273,7 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
   if (!Number.isNaN(wordStartIdx)) {
     newGlyphData.push({
       glyphs: glyphs.slice(wordStartIdx, wordStartIdx + glyphs.length),
-      bold: false,
+      isBold: false,
     });
   }
   return newGlyphData;

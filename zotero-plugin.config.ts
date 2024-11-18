@@ -42,6 +42,15 @@ export default defineConfig({
         target: "firefox115",
         outdir: "build/addon/chrome/content/scripts/reader",
       },
+      {
+        entryPoints: ["src/preferences/index.ts"],
+        define: {
+          __env__: `"${process.env.NODE_ENV}"`,
+        },
+        bundle: true,
+        target: "firefox115",
+        outfile: "build/addon/chrome/content/scripts/preferences.js",
+      },
     ],
   },
 

@@ -29,19 +29,47 @@
     ></html:input>
   </hbox>
 </groupbox>
-<groupbox>
+<groupbox id="__addonRef__-parsing">
   <label><html:h2 data-l10n-id="parsing-title"></html:h2></label>
   <hbox align="center">
     <html:label
-      data-l10n-id="parsingContrast"
-      for="__addonRef__-parsingContrast"
+      data-l10n-id="opacityContrast"
+      for="__addonRef__-opacityContrast"
     ></html:label>
     <html:input
-      id="__addonRef__-parsingContrast"
-      preference="__prefsPrefix__.parsingContrast"
+      id="__addonRef__-opacityContrast"
+      preference="__prefsPrefix__.opacityContrast"
       type="number"
       min="1"
       max="5"
+      step="1"
+    ></html:input>
+  </hbox>
+  <hbox align="center">
+    <html:label
+      data-l10n-id="weightContrast"
+      for="__addonRef__-weightContrast"
+    ></html:label>
+    <html:input
+      id="__addonRef__-weightContrast"
+      preference="__prefsPrefix__.weightContrast"
+      type="number"
+      min="1"
+      max="5"
+      step="1"
+    ></html:input>
+  </hbox>
+  <hbox align="center">
+    <html:label
+      data-l10n-id="weightOffset"
+      for="__addonRef__-weightOffset"
+    ></html:label>
+    <html:input
+      id="__addonRef__-weightOffset"
+      preference="__prefsPrefix__.weightOffset"
+      type="number"
+      min="-3"
+      max="3"
       step="1"
     ></html:input>
   </hbox>
@@ -59,8 +87,18 @@
       step="1"
     ></html:input>
   </hbox>
+  <vbox no-highlight="true">
+    <html:div id="__addonRef__-parsingPreview"
+      >Zotero is a free, easy-to-use tool to help you collect, organize,
+      annotate, cite, and share research.</html:div
+    >
+    <hbox id="__addonRef__-parsingPreviewWarning" align="center">
+      <html:img src="chrome://zotero/skin/20/universal/error.svg"></html:img>
+      <html:div data-l10n-id="parsingPreviewWarning"></html:div>
+    </hbox>
+  </vbox>
 </groupbox>
-<vbox>
+<vbox id="__addonRef__-pluginInfo">
   <html:label
     data-l10n-id="pref-help"
     data-l10n-args='{"time": "__buildTime__","name": "__addonName__","version":"__buildVersion__"}'
