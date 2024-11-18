@@ -16,6 +16,18 @@
     native="true"
     oncommand="Zotero.__addonInstance__.hooks.onShowRestartDialog();"
   />
+  <hbox align="center">
+    <html:label
+      data-l10n-id="disableForLanguages"
+      for="__addonRef__-disableForLanguages"
+    ></html:label>
+    <html:input
+      id="__addonRef__-disableForLanguages"
+      preference="__prefsPrefix__.disableForLanguages"
+      data-l10n-id="disableForLanguagesInput"
+      type="text"
+    ></html:input>
+  </hbox>
 </groupbox>
 <groupbox>
   <label><html:h2 data-l10n-id="parsing-title"></html:h2></label>
