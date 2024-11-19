@@ -120,7 +120,7 @@ function patchCanvasGraphicsShowText(
       this.ctx.font = isBold ? bold.font : light.font;
       // If use greater contrast is enabled, set text opacity to less than 1
       if (opacityContrast > 1 && !isBold) {
-        this.ctx.globalAlpha = bold.alpha;
+        this.ctx.globalAlpha = light.alpha;
       }
       original_showText.apply(this, [newG]);
       this.ctx.font = savedFont;
