@@ -1,6 +1,6 @@
 {
   "name": "bionic-for-zotero",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Bionic reading experience with Zotero.",
   "config": {
     "addonName": "Bionic for Zotero",
