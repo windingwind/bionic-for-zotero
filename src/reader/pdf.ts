@@ -17,6 +17,8 @@ let intentStatesPrototype: any;
 
 let firstRenderTriggered = false;
 
+let isWordBroken = false;
+
 function main() {
   patchIntentStatesGet();
 
@@ -209,7 +211,7 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
     // }).join("");
     _log(`Boldening word: ${wordStartIdx} ${wordEndIdx}`, word);
 
-    word.replace(/<EMPTY>/g, " ");
+    word = word.replace(/<EMPTY>/g, "\u2060");
 
     if (wordEndIdx === wordStartIdx || !CONVERTIBLE_REGEX.test(word)) {
       newGlyphData.push({
@@ -225,8 +227,19 @@ function computeBionicGlyphs(glyphs: Glyph[]) {
     let boldNumber = 1;
 
     const wordLength = wordEndIdx + 1 - wordStartIdx;
-
-    if (wordLength < 4) {
+    const isPreviousWordBroken = isWordBroken;
+    isWordBroken =
+      word.endsWith("\u2060") && wordLength >= 1 && wordLength <= 10;
+    // If the word ends with a zero-width space, it may be broken
+    if (isPreviousWordBroken && !isWordBroken) {
+      // If the previous word was broken and the current word is not broken, skip boldening
+      boldNumber = 0;
+      isWordBroken = false;
+    } else if (isWordBroken) {
+      // If the word is broken, bolden the entire word as it is the first part
+      _log("The word may be broken", word.slice(wordStartIdx, wordEndIdx + 1));
+      boldNumber = wordLength;
+    } else if (wordLength < 4) {
       boldNumber = 1;
     } else {
       boldNumber = Math.ceil(wordLength / 2);
