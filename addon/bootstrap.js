@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 /**
  * Most of this code is from Zotero team's official Make It Red example[1]
  * or the Zotero 7 documentation[2].
@@ -58,18 +56,11 @@ function shutdown({ id, version, resourceURI, rootURI }, reason) {
     return;
   }
 
-  if (typeof Zotero === "undefined") {
-    Zotero = Components.classes["@zotero.org/Zotero;1"].getService(
-      Components.interfaces.nsISupports,
-    ).wrappedJSObject;
-  }
   Zotero.__addonInstance__?.hooks.onShutdown();
 
   Cc["@mozilla.org/intl/stringbundle;1"]
     .getService(Components.interfaces.nsIStringBundleService)
     .flushBundles();
-
-  Cu.unload(`${rootURI}/chrome/content/scripts/__addonRef__.js`);
 
   if (chromeHandle) {
     chromeHandle.destruct();

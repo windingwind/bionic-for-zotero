@@ -30,6 +30,8 @@ async function onMainWindowLoad(win: _ZoteroTypes.MainWindow): Promise<void> {
   // @ts-ignore This is a moz feature
   win.MozXULElement.insertFTLIfNeeded(`${config.addonRef}-mainWindow.ftl`);
 
+  ztoolkit.log("onMainWindowLoad", { win });
+
   initMenus(win);
 }
 
@@ -45,6 +47,7 @@ function onShutdown(): void {
   ztoolkit.unregisterAll();
   // Remove addon object
   addon.data.alive = false;
+  // @ts-ignore Plugin instance is not typed
   delete Zotero[config.addonInstance];
 }
 

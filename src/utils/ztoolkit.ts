@@ -19,13 +19,15 @@ function initZToolkit(_ztoolkit: ReturnType<typeof createZToolkit>) {
   _ztoolkit.basicOptions.log.disableConsole = env === "production";
   _ztoolkit.UI.basicOptions.ui.enableElementJSONLog = __env__ === "development";
   _ztoolkit.UI.basicOptions.ui.enableElementDOMLog = __env__ === "development";
-  _ztoolkit.basicOptions.debug.disableDebugBridgePassword =
-    __env__ === "development";
   _ztoolkit.basicOptions.api.pluginID = config.addonID;
 }
 
-import { BasicTool, MenuManager, unregister } from "zotero-plugin-toolkit";
-import { UITool } from "zotero-plugin-toolkit";
+import {
+  BasicTool,
+  MenuManager,
+  unregister,
+  UITool,
+} from "zotero-plugin-toolkit";
 
 class MyToolkit extends BasicTool {
   UI: UITool;
