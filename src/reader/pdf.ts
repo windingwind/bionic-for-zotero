@@ -95,9 +95,17 @@ function patchCanvasGraphicsShowText(
   const original_showText = canvasGraphicsPrototype[pdfjsLib.OPS.showText];
   _log("Patching showText", canvasGraphicsPrototype);
   // @ts-ignore Runtime generated method on prototype
-  canvasGraphicsPrototype[pdfjsLib.OPS.showText] = function (glyphs: Glyph[]) {
+  canvasGraphicsPrototype[pdfjsLib.OPS.showText] = function (
+    ...args: [Glyph[]] | [number, Glyph[]]
+  ) {
+    // PDF.js < 5.7 calls showText(glyphs); >= 5.7 calls showText(opIdx, glyphs).
+    const hasOpIdx = args.length >= 2;
+    const glyphs = (hasOpIdx ? args[1] : args[0]) as Glyph[];
+    const buildArgs = (g: Glyph[]) =>
+      hasOpIdx ? [args[0], g] : [g];
+
     if (!window.__BIONIC_READER_ENABLED) {
-      return original_showText.apply(this, [glyphs]);
+      return original_showText.apply(this, buildArgs(glyphs));
     }
 
     const opacityContrast = window.__BIONIC_OPACITY_CONTRAST || 1;
@@ -124,7 +132,7 @@ function patchCanvasGraphicsShowText(
       if (opacityContrast > 1 && !isBold) {
         this.ctx.globalAlpha = light.alpha;
       }
-      original_showText.apply(this, [newG]);
+      original_showText.apply(this, buildArgs(newG));
       this.ctx.font = savedFont;
       this.ctx.globalAlpha = savedOpacity;
     }
