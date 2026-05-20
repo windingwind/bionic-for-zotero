@@ -1,71 +1,68 @@
-import { getString } from "../utils/locale";
 import { getPref, setPref } from "../utils/prefs";
 import { toggleCurrentItemStatus, getCurrentItemStatus } from "../utils/status";
 
 export { initMenus };
 
-function initMenus(win: _ZoteroTypes.MainWindow): void {
-  ztoolkit.Menu.register("menuView", {
-    tag: "menuseparator",
-    id: `${addon.data.config.addonRef}-menu-view-separator`,
-    classList: ["menu-type-reader", "pdf"],
-  });
+const VIEW_MENU_ID = `${addon.data.config.addonRef}-menu-view`;
 
-  ztoolkit.Menu.register("menuView", {
-    tag: "menuitem",
-    id: `${addon.data.config.addonRef}-menu-view-enable-bionic`,
-    classList: ["menu-type-reader", "pdf"],
-    label: getString("menu-enableBionic"),
-    type: "checkbox",
-    commandListener: () => {
-      setPref("enableBionicReader", !getPref("enableBionicReader"));
-    },
-    getVisibility(elem, ev) {
-      elem.setAttribute(
-        "checked",
-        getPref("enableBionicReader") ? "true" : "false",
-      );
-      return undefined;
-    },
-  });
-
-  ztoolkit.Menu.register("menuView", {
-    tag: "menuitem",
-    id: `${addon.data.config.addonRef}-menu-view-enable-bionic-current-item`,
-    classList: ["menu-type-reader", "pdf"],
-    label: getString("menu-enableBionicForCurrentItem"),
-    type: "checkbox",
-    commandListener: () => {
-      const itemID = Zotero.Reader.getByTabID(
-        win.Zotero_Tabs.selectedID,
-      ).itemID;
-      if (!itemID) {
-        return;
-      }
-      toggleCurrentItemStatus(itemID);
-    },
-    getVisibility(elem, ev) {
-      const itemID = Zotero.Reader.getByTabID(
-        win.Zotero_Tabs.selectedID,
-      ).itemID;
-      if (!itemID) {
-        return false;
-      }
-      elem.setAttribute(
-        "checked",
-        getCurrentItemStatus(itemID) ? "true" : "false",
-      );
-      return undefined;
-    },
-  });
-
-  ztoolkit.Menu.register("menuView", {
-    tag: "menuitem",
-    id: `${addon.data.config.addonRef}-menu-view-refresh-readers`,
-    classList: ["menu-type-reader", "pdf"],
-    label: getString("menu-refreshReaders"),
-    commandListener: () => {
-      addon.hooks.onRefreshReaders();
-    },
+function initMenus(_win: _ZoteroTypes.MainWindow): void {
+  Zotero.MenuManager.registerMenu({
+    menuID: VIEW_MENU_ID,
+    pluginID: addon.data.config.addonID,
+    target: "main/menubar/view",
+    menus: [
+      { menuType: "separator", enableForTabTypes: ["reader/pdf"] },
+      {
+        menuType: "menuitem",
+        l10nID: "menu-enableBionic",
+        enableForTabTypes: ["reader/pdf"],
+        onShowing: (_ev, context) => {
+          context.menuElem.setAttribute("type", "checkbox");
+          context.menuElem.setAttribute(
+            "checked",
+            getPref("enableBionicReader") ? "true" : "false",
+          );
+        },
+        onCommand: () => {
+          setPref("enableBionicReader", !getPref("enableBionicReader"));
+        },
+      },
+      {
+        menuType: "menuitem",
+        l10nID: "menu-enableBionicForCurrentItem",
+        enableForTabTypes: ["reader/pdf"],
+        onShowing: (_ev, context) => {
+          const itemID = (
+            context as _ZoteroTypes.MenuManager.MenubarMenuContext
+          ).items?.[0]?.id;
+          if (!itemID) {
+            context.setVisible(false);
+            return;
+          }
+          context.menuElem.setAttribute("type", "checkbox");
+          context.menuElem.setAttribute(
+            "checked",
+            getCurrentItemStatus(itemID) ? "true" : "false",
+          );
+        },
+        onCommand: (_ev, context) => {
+          const itemID = (
+            context as _ZoteroTypes.MenuManager.MenubarMenuContext
+          ).items?.[0]?.id;
+          if (!itemID) {
+            return;
+          }
+          toggleCurrentItemStatus(itemID);
+        },
+      },
+      {
+        menuType: "menuitem",
+        l10nID: "menu-refreshReaders",
+        enableForTabTypes: ["reader/pdf"],
+        onCommand: () => {
+          addon.hooks.onRefreshReaders();
+        },
+      },
+    ],
   });
 }

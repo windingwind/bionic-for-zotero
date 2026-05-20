@@ -42,7 +42,6 @@ Want to know more? Check out the latest research on [Google Scholar](https://sch
 ## 👋 Install
 
 - Download the plugin (.xpi file) from below.
-
   - [Latest Stable](https://github.com/windingwind/bionic-for-zotero/releases/latest)
   - [All Releases](https://github.com/windingwind/bionic-for-zotero/releases)
 

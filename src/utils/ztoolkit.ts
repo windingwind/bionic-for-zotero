@@ -22,21 +22,14 @@ function initZToolkit(_ztoolkit: ReturnType<typeof createZToolkit>) {
   _ztoolkit.basicOptions.api.pluginID = config.addonID;
 }
 
-import {
-  BasicTool,
-  MenuManager,
-  unregister,
-  UITool,
-} from "zotero-plugin-toolkit";
+import { BasicTool, unregister, UITool } from "zotero-plugin-toolkit";
 
 class MyToolkit extends BasicTool {
   UI: UITool;
-  Menu: MenuManager;
 
   constructor() {
     super();
     this.UI = new UITool(this);
-    this.Menu = new MenuManager(this);
   }
 
   unregisterAll() {

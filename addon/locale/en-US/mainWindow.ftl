@@ -8,3 +8,10 @@ item-section-example2-sidenav-tooltip =
     .tooltiptext = This is Plugin Template section (reader)
 item-section-example2-button-tooltip =
     .tooltiptext = Unregister this section
+
+menu-enableBionic =
+    .label = Enable Bionic Mode
+menu-enableBionicForCurrentItem =
+    .label = Enable Bionic Mode for Current Item
+menu-refreshReaders =
+    .label = Manual Refresh for Bionic Mode

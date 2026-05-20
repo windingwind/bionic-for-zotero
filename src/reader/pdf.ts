@@ -101,8 +101,7 @@ function patchCanvasGraphicsShowText(
     // PDF.js < 5.7 calls showText(glyphs); >= 5.7 calls showText(opIdx, glyphs).
     const hasOpIdx = args.length >= 2;
     const glyphs = (hasOpIdx ? args[1] : args[0]) as Glyph[];
-    const buildArgs = (g: Glyph[]) =>
-      hasOpIdx ? [args[0], g] : [g];
+    const buildArgs = (g: Glyph[]) => (hasOpIdx ? [args[0], g] : [g]);
 
     if (!window.__BIONIC_READER_ENABLED) {
       return original_showText.apply(this, buildArgs(glyphs));

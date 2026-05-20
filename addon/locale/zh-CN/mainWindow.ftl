@@ -8,3 +8,10 @@ item-section-example2-sidenav-tooltip =
     .tooltiptext = 这是插件模板面板(阅读器)
 item-section-example2-button-tooltip =
     .tooltiptext = 移除此面板
+
+menu-enableBionic =
+    .label = 启用Bionic模式
+menu-enableBionicForCurrentItem =
+    .label = 启用当前条目的Bionic模式
+menu-refreshReaders =
+    .label = 手动刷新Bionic模式
