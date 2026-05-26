@@ -22,6 +22,7 @@ function initReader() {
 
   Zotero.Reader._readers.forEach((reader) => {
     injectScript({ reader });
+    injectToolbarButtonIntoExistingReader(reader);
   });
 }
 
@@ -70,8 +71,8 @@ async function injectScript(event: { reader: _ZoteroTypes.ReaderInstance }) {
 
 function injectToolbarButton(event: {
   reader: _ZoteroTypes.ReaderInstance;
-  doc: Document;
-  append: (...elems: Node[]) => void;
+  doc?: Document;
+  append?: (...elems: Node[]) => void;
 }) {
   if (!getPref("enableReaderToolbarButton")) {
     return;
@@ -79,38 +80,79 @@ function injectToolbarButton(event: {
 
   const { reader, doc, append } = event;
 
-  if (reader.type !== "pdf") {
+  if (reader.type !== "pdf" || !doc || !append) {
     return;
   }
 
-  const button = ztoolkit.UI.createElement(doc, "button", {
-    namespace: "html",
-    classList: [
-      "toolbar-button",
-      `${addon.data.config.addonRef}-reader-button`,
-    ],
-    properties: {
-      tabIndex: -1,
-    },
-    listeners: [
-      {
-        type: "click",
-        listener: async (ev: Event) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          (ev.target as HTMLButtonElement).disabled = true;
-          const currentWin = await waitForReaderPDFViewer(reader);
-          if (!currentWin) {
-            return;
-          }
-          toggleCurrentItemStatus(reader.itemID || -1);
-        },
-      },
-    ],
-    enableElementRecord: false,
+  const button = doc.createElement("button") as HTMLButtonElement;
+  button.classList.add(
+    "toolbar-button",
+    `${addon.data.config.addonRef}-reader-button`,
+  );
+  button.tabIndex = -1;
+  button.addEventListener("click", async (ev: MouseEvent) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    (ev.target as HTMLButtonElement).disabled = true;
+    const currentWin = await waitForReaderPDFViewer(reader);
+    if (!currentWin) {
+      return;
+    }
+    toggleCurrentItemStatus(reader.itemID || -1);
   });
   updateReaderToolbarButton(button, reader);
   append(button);
+  // @ts-ignore store reference for reliable lookup in refreshReader
+  reader._bionicToolbarButton = button;
+}
+
+function injectToolbarButtonIntoExistingReader(
+  reader: _ZoteroTypes.ReaderInstance,
+): void {
+  if (!getPref("enableReaderToolbarButton") || reader.type !== "pdf") {
+    return;
+  }
+  try {
+    // @ts-ignore  Not typed yet
+    const iframeDoc = reader._iframeWindow?.document as Document | undefined;
+    if (!iframeDoc) {
+      return;
+    }
+    if (
+      iframeDoc.querySelector(`.${addon.data.config.addonRef}-reader-button`)
+    ) {
+      return;
+    }
+    const customSections = iframeDoc.querySelector(
+      ".toolbar .end .custom-sections",
+    );
+    if (!customSections) {
+      return;
+    }
+    const button = iframeDoc.createElement("button") as HTMLButtonElement;
+    button.classList.add(
+      "toolbar-button",
+      `${addon.data.config.addonRef}-reader-button`,
+    );
+    button.tabIndex = -1;
+    button.addEventListener("click", async (ev: MouseEvent) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      (ev.target as HTMLButtonElement).disabled = true;
+      const currentWin = await waitForReaderPDFViewer(reader);
+      if (!currentWin) {
+        return;
+      }
+      toggleCurrentItemStatus(reader.itemID || -1);
+    });
+    updateReaderToolbarButton(button, reader);
+    const section = iframeDoc.createElement("div");
+    section.className = "section";
+    section.appendChild(button);
+    customSections.appendChild(section);
+    // @ts-ignore
+    reader._bionicToolbarButton = button;
+  } catch (_e) {}
 }
 
 function updateReaderToolbarButton(
@@ -160,9 +202,11 @@ async function refreshReader(reader: _ZoteroTypes.ReaderInstance) {
     return;
   }
   setWindowPrefs(reader, win);
-  const button = reader._iframeWindow?.document.querySelector(
-    `.${addon.data.config.addonRef}-reader-button`,
-  ) as HTMLButtonElement;
+  // @ts-ignore stored at inject time
+  const button = (reader._bionicToolbarButton ||
+    reader._iframeWindow?.document.querySelector(
+      `.${addon.data.config.addonRef}-reader-button`,
+    )) as HTMLButtonElement;
   if (button) {
     updateReaderToolbarButton(button, reader, win.__BIONIC_READER_ENABLED);
   }

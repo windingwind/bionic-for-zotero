@@ -3,9 +3,8 @@ import { toggleCurrentItemStatus, getCurrentItemStatus } from "../utils/status";
 
 export { initMenus };
 
-const VIEW_MENU_ID = `${addon.data.config.addonRef}-menu-view`;
-
 function initMenus(_win: _ZoteroTypes.MainWindow): void {
+  const VIEW_MENU_ID = `${addon.data.config.addonRef}-menu-view`;
   Zotero.MenuManager.registerMenu({
     menuID: VIEW_MENU_ID,
     pluginID: addon.data.config.addonID,
@@ -32,9 +31,7 @@ function initMenus(_win: _ZoteroTypes.MainWindow): void {
         l10nID: "menu-enableBionicForCurrentItem",
         enableForTabTypes: ["reader/pdf"],
         onShowing: (_ev, context) => {
-          const itemID = (
-            context as _ZoteroTypes.MenuManager.MenubarMenuContext
-          ).items?.[0]?.id;
+          const itemID = Zotero.Reader.selectedReader?.itemID;
           if (!itemID) {
             context.setVisible(false);
             return;
@@ -45,10 +42,8 @@ function initMenus(_win: _ZoteroTypes.MainWindow): void {
             getCurrentItemStatus(itemID) ? "true" : "false",
           );
         },
-        onCommand: (_ev, context) => {
-          const itemID = (
-            context as _ZoteroTypes.MenuManager.MenubarMenuContext
-          ).items?.[0]?.id;
+        onCommand: () => {
+          const itemID = Zotero.Reader.selectedReader?.itemID;
           if (!itemID) {
             return;
           }
