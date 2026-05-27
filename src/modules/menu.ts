@@ -3,11 +3,9 @@ import { toggleCurrentItemStatus, getCurrentItemStatus } from "../utils/status";
 
 export { initMenus };
 
-const VIEW_MENU_ID = `${addon.data.config.addonRef}-menu-view`;
-
 function initMenus(_win: _ZoteroTypes.MainWindow): void {
   Zotero.MenuManager.registerMenu({
-    menuID: VIEW_MENU_ID,
+    menuID: "bionicReaderMenu",
     pluginID: addon.data.config.addonID,
     target: "main/menubar/view",
     menus: [
