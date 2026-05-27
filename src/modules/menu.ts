@@ -12,7 +12,7 @@ function initMenus(_win: _ZoteroTypes.MainWindow): void {
       { menuType: "separator", enableForTabTypes: ["reader/pdf"] },
       {
         menuType: "menuitem",
-        l10nID: "menu-enableBionic",
+        l10nID: `${addon.data.config.addonRef}-menu-enableBionic`,
         enableForTabTypes: ["reader/pdf"],
         onShowing: (_ev, context) => {
           context.menuElem.setAttribute("type", "checkbox");
@@ -27,7 +27,7 @@ function initMenus(_win: _ZoteroTypes.MainWindow): void {
       },
       {
         menuType: "menuitem",
-        l10nID: "menu-enableBionicForCurrentItem",
+        l10nID: `${addon.data.config.addonRef}-menu-enableBionicForCurrentItem`,
         enableForTabTypes: ["reader/pdf"],
         onShowing: (_ev, context) => {
           const itemID = (
@@ -55,7 +55,7 @@ function initMenus(_win: _ZoteroTypes.MainWindow): void {
       },
       {
         menuType: "menuitem",
-        l10nID: "menu-refreshReaders",
+        l10nID: `${addon.data.config.addonRef}-menu-refreshReaders`,
         enableForTabTypes: ["reader/pdf"],
         onCommand: () => {
           addon.hooks.onRefreshReaders();
