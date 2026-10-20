@@ -12,7 +12,9 @@ declare interface InternalRenderTask {
   gfx: any;
 }
 
-declare interface Glyph {
-  unicode: string;
-  isSpace: boolean;
-}
+type Glyph =
+  | number
+  | {
+      unicode: string;
+      isSpace: boolean;
+    };
